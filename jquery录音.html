@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        a,
+        button {
+            border: 0;
+            background-color: #448aff21;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 2px;
+            color: #448aff !important;
+        }
+    </style>
+</head>
+
+<body style="margin-top: 20px;">
+    <button id="start">Start</button>
+    <button id="stop">Stop</button>
+    <div>
+        <audio id="audio" controls></audio>
+    </div>
+    <script>
+        let l = console.log
+        const stopButton = document.getElementById('stop');
+        const startButton = document.getElementById('start');
+
+        navigator.mediaDevices.getUserMedia({
+                audio: true,
+                // video: true
+            })
+            .then(stream => {
+                stopButton.addEventListener('click', e => {
+                    mediaRecorder.stop();
+                })
+
+                startButton.addEventListener('click', e => {
+                    mediaRecorder.start();
+                })
+                const recordedChunks = [];
+                const mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.addEventListener('dataavailable', function (e) {
+                    if (e.data.size > 0) {
+                        recordedChunks.push(e.data);
+                    }
+                });
+
+                mediaRecorder.addEventListener('stop', function () {
+                    l('暂停')
+                    var audio = document.getElementById('audio');
+                    audio.src = URL.createObjectURL(new Blob(recordedChunks));
+                    audio.play();
+                });
+
+                mediaRecorder.addEventListener('start', e => {
+                    l('开始')
+                })
+            });
+    </script>
+</body>
+</html>

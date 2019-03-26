@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<div id="showtime"></div>
+	</body>
+
+</html>
+<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+<script type="text/javascript">
+	/* 获取当前日期 */  
+//	function showTime() {  
+//		var show_day = new Array('星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六');  
+//		var time = new Date(); 
+//		var year = time.getFullYear(); 
+//		var month = time.getMonth() + 1;  
+//		var date = time.getDate();  
+//		var day = time.getDay();  
+//		var hour = time.getHours();  
+//		var minutes = time.getMinutes();  
+//		var second = time.getSeconds(); 
+//		/*  month<10?month='0'+month:month;  */
+//		 
+//		hour < 10 ? hour = '0' + hour : hour;  
+//		minutes < 10 ? minutes = '0' + minutes : minutes;  
+//		second < 10 ? second = '0' + second : second;  
+//		console.log(day);
+//		var now_time = '今天是：' + year + '年' + month + '月' + date + '日' + ' ' + show_day[day] + '';  
+//		document.getElementById('showtime').innerHTML = now_time;   /* setTimeout("showTime();",1000);  */
+//	}	
+//	$(function() {
+//		showTime();
+//	});
+
+	//获取最近3天日期
+	var show_day = new Array('星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六');
+	var time = new Date(); 
+	var dayThis = time.getDay();
+	var day = dayThis;
+	var week=[];
+	var days = dayThis;
+	for(var i=0;i<3;i++){
+		day--;
+		if(day<0){
+			day=6;
+		}
+		week.unshift(show_day[day]);
+	}
+	for(var j=0;j<=3;j++){
+		if(days>6){
+			days=0;
+		}
+		week.push(show_day[days]);
+		days++;
+	}
+	
+	console.log(week);
+</script>

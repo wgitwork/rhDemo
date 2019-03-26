@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1">
+		<title></title>    
+		<link rel="stylesheet" href="css/mpicker.css">
+
+	</head>
+	<body>
+		<input type="text" class="select-value" value="">
+	</body>
+</html>
+<script src="js/jquery-2.2.1.min.js"></script>
+<script src="js/json.js"></script>
+<script src="js/jsonExchange.js"></script>
+<script src="js/mPicker.min.js"></script>
+<script type="text/javascript">
+	var region=[];
+	var regionId=new Object();
+	$.ajax({
+		type:"post",
+		url:"http://znl.h9e.net/index.php/Home/Index/getRegionCat",
+		async:false,
+		data:{},
+		dataType:'json',
+		success:function(data){
+//			console.log(data);
+			$.each(data.data.region, function (index, obj){
+				regionId.values=obj.id;
+				regionId.name=obj.REGION_NAME;
+				region.push(regionId);
+			})
+		}
+	});
+	console.log(region)
+	$('.select-value').mPicker({
+        level:1,
+        data1: region,
+//      data2: 
+        Linkage:false,
+        rows:6,
+        idDefault:false,
+        splitStr:'-',
+        header:'<div class="mPicker-header">三级联动选择插件</div>',
+        afterOne:function(json){
+        	console.log(json);
+        },
+        confirm:function(json){
+            console.info('当前选中json：',json);
+            console.info('【json里有不带value时】');
+            console.info('选中的id序号为：', json.ids);
+            console.info('选中的value为：', json.values);
+            // var id1= $('.select-value').data('id1');
+            // var id2 = $('.select-value').data('id2');
+            // var id3 = $('.select-value').data('id3');
+            // console.info('第一列json：',city3[id1]);
+            // console.info('第二列json：', city3[id1].child[id2]);
+            // console.info('第三列json：', city3[id1].child[id2].child[id3]);
+        },
+        cancel:function(json){
+            console.info('当前选中json：',json);
+        }
+    })
+</script>

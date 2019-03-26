@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>评分</title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<div class="score">
+			<img src="img/score.png"/>
+			<img src="img/score.png"/>
+			<img src="img/score.png"/>
+			<img src="img/score.png"/>
+			<img src="img/score.png"/>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	$('.score img').click(function(){
+		var myIndex=$(this).index();
+        var scoreIndex=0;
+        for(var i=0;i<$(".score img").length;i++){
+            if(myIndex>=i){
+                $(".score img").eq(i).attr('src','img/scores.png');
+                scoreIndex++;
+            }else{
+                $(".score img").eq(i).attr('src','img/score.png');
+            }
+        }
+        $('.score').attr('id',scoreIndex*2);
+	})
+</script>

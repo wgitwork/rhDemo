@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+<title></title> 
+<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+</head> 
+<style type="text/css">
+select{width:50px;}
+</style> 
+<body> 
+<select id="select" onfocus="selectFocus(this)"> 
+<option onclick="selectClick($(this))">1</option> 
+<option onclick="selectClick($(this))">2</option> 
+<option onclick="selectClick($(this))">3</option> 
+<option onclick="selectClick($(this))">4</option> 
+<option onclick="selectClick($(this))">5</option> 
+<option onclick="selectClick($(this))">1</option> 
+<option onclick="selectClick($(this))">2</option> 
+<option onclick="selectClick($(this))">3</option> 
+<option onclick="selectClick($(this))">4</option> 
+<option onclick="selectClick($(this))">5</option>
+<option onclick="selectClick($(this))">1</option> 
+<option onclick="selectClick($(this))">2</option> 
+<option onclick="selectClick($(this))">3</option> 
+<option onclick="selectClick($(this))">4</option> 
+<option onclick="selectClick($(this))">5</option> 
+<option onclick="selectClick($(this))">1</option> 
+<option onclick="selectClick($(this))">2</option> 
+<option onclick="selectClick($(this))">3</option> 
+<option onclick="selectClick($(this))">4</option> 
+<option onclick="selectClick($(this))">5</option> 
+</select> 
+ 
+<script type="text/javascript"> 
+function selectFocus(obj){ 
+obj.setAttribute("size","10"); 
+} 
+//点击添加size属性
+function selectClick(obj){ 
+	console.log(obj.parents().html());
+obj.parents().removeAttr("size"); 
+obj.parents().blur(); 
+obj.attr("selected",""); 
+}
+</script> 
+</body> 
+</html>

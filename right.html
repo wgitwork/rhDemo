@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+
+	<body>
+		<thead>
+			<tr>
+				<td>机构编码</td>
+				<td>机构名称</td>
+				<td>执业证号</td>
+				<td>设立时间</td>
+				<td>负责人</td>
+				<td>执业区域</td>
+				<td>添加时间</td>
+				<td width="180">操作</td>
+			</tr>
+		</thead>
+		<volist name="list" id="vo">
+			<tr align="center" id="{$vo.id}">
+				<td>{$vo.jgbm}</td>
+				<td>{$vo.jgmc}</td>
+				<td>{$vo.zyzh}</td>
+				<td>{$vo.jgslsj}</td>
+				<td>{$vo.fzr}</td>
+				<td>{$vo.qy}</td>
+				<td>{$vo.createtime|date="Y-m-d H:i:s",###}</td>
+				<td>[
+					<a href="__URL__/gzc_add?pid={$vo.id}">添加下级机构 </a> ][
+					<a href="__URL__/gz_member?id={$vo.id}">人员列表 </a> ][
+					<a href="__URL__/gzc_add?id={$vo.id}">编辑 </a> ] [
+					<a link="{:U('Institution/gzc_del/',array('id'=>$vo['id']))}" href="javascript:void(0)" name="{$vo.name}" class="del">删除 </a> ]</td>
+			</tr>
+		</volist>
+	</body>
+
+</html>

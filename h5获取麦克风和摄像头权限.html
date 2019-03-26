@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<title>Document</title>
+	</head>
+
+	<body>
+		<video src="" id="video"></video>
+	</body>
+	<script>
+		function hasGetUserMedia() {
+			//请注意:在Opera浏览器中不使用前缀 
+			return !!(navigator.getUserMedia || navigator.webkitGetUserMedia ||
+				navigator.mozGetUserMedia || navigator.msGetUserMedia);
+		}
+		if(hasGetUserMedia()) {
+			alert('您的浏览器支持getUserMedia方法');
+		} else {
+			alert('您的浏览器不支持getUserMedia方法');
+		}
+		//获取设备权限
+		var onFailSoHard = function() {
+			alert('设备拒绝访问');
+		};
+		//不使用供应商前缀 
+		navigator.getUserMedia({
+			video: true,
+			audio: true
+		}, function(localMediaStream) {
+			var video = document.getElementById('video');
+			video.src = window.URL.createObjectURL(localMediaStream);
+			//请注意:当使用getUserMedia方法时,在Chrome浏览器中不触发onloadedmetadata事件 
+			video.onloadedmetadata = function(e) {
+				//后续代码略 
+			};
+		}, onFailSoHard);
+
+		//兼容性
+		window.URL = window.URL || window.webkitURL;
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||
+			navigator.mozGetUserMedia || navigator.msGetUserMedia;
+		var video = document.getElementById('video');
+		if(navigator.getUserMedia) {
+			navigator.getUserMedia({
+				audio: true,
+				video: true
+			}, function(stream) {
+				video.src = window.URL.createObjectURL(stream);
+			}, onFailSoHard);
+		} else {
+			alert('您的浏览器不支持getUserMedia方法');
+		}
+	</script>
+
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/rolldate.css"/>
+		<style type="text/css">
+			input{
+				width:20%;
+				height:4rem;
+				font-size:1rem;
+				padding-left:1rem;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="text" name="beginTime" id="beginTime" value="选择开始时间" readonly="readonly" />——>
+		<input type="text" name="endTime" id="endTime" value="选择结束时间" readonly="readonly" />
+	</body>
+</html>
+<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+<script type="text/javascript" src="js/rolldate.js"></script>
+<script type="text/javascript">
+	window.onload = function() {
+		new rolldate.Date({
+			el: '#beginTime',
+			format: 'YYYY-MM-DD',
+			beginYear: 2000,
+			endYear: 2100,
+			theme: '#00cccc',
+			confirmBefore:function(el,date){
+				var d = $('#endTime').val();
+				var data;
+				if(d!=""){
+					d=new Date(d).getTime()/1000;
+					data=new Date(date).getTime()/1000;
+					if(data>=d){
+						alert('当前日期不能大于上一日期');
+						return false;
+					}
+				}
+			}
+		})
+		new rolldate.Date({
+			el: '#endTime',
+			format: 'YYYY-MM-DD',
+			beginYear: 2000,
+			endYear: 2100,
+			theme: '#00cccc',
+			confirmBefore:function(el,date){
+				var d = $('#beginTime').val();
+				var data;
+				if(d!=""){
+					d=new Date(d).getTime()/1000;
+					data=new Date(date).getTime()/1000;
+					if(d>=data){
+						alert('当前日期不能小于上一日期');
+						return false;
+					}
+				}
+			}
+		})
+	}
+</script>

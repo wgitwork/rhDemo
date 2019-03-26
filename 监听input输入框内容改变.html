@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<input type="text" name="" id="" class="ruxue" value="" />
+		<button></button>
+	</body>
+</html>
+<script type="text/javascript">
+$('.ruxue').on('input propertychange',function(){
+    console.log($(this).val());
+ })
+var p=0;
+$('button').click(function(){
+	p++;
+	$('.ruxue').val(p);
+})
+</script>

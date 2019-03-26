@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+<script src="js/jquery-2.2.1.min.js"></script>
+	<style type="text/css">
+		img{
+			width:200px;
+			height:200px;
+		}
+	</style>
+	<body>
+		
+		<form action="http://zxk.h9e.net/index.php/Home/Test/testImg" method="post" target="nm_iframe" enctype="multipart/form-data">
+			选择图片：<input type="file" id="input" name="img" onchange="onc()" multiple="multiple" />
+			<input class="btn" type="submit" value="提交" />
+		</form>
+		<iframe id="id_iframe" name="nm_iframe" style="display:none;" />
+	</body>
+
+</html>
+
+<script type="text/javascript">
+	function onc() {
+		var files = document.getElementById("input").files;
+		for(var i=0;i<files.length;i++){
+			var reader = new FileReader();
+	        reader.readAsDataURL(files[i]);                    
+	        reader.onload = function(e) {
+	            // 图片base64化
+	            var newUrl = this.result;
+	            $('body').prepend('<img src="'+ newUrl +'">');
+	        };
+        }
+	}
+	
+//	function test(){
+//		console.log($(this).html())
+//		var form = new FormData(document.getElementById("form"));
+//		$.ajax({
+//	        url:"http://zxk.h9e.net/index.php/Home/Test/testImg",
+//	        type:"post",
+//	        data:form,
+//	        processData:false,
+//	        contentType:false,
+//	        success:function(data){
+//	            window.clearInterval(timer);
+//	            console.log(data);
+//	        },
+//	        error:function(e){
+//	            alert("错误！！");
+//	            window.clearInterval(timer);
+//	        }
+//	    });
+//	}
+</script>

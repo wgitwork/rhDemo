@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<form enctype="multipart/form-data" id="upForm">
+			<input type="text" name="txt" id="txt" value="" />
+			<input type="text" name="txt" id="txt" value="" />
+			<input type="text" name="txt" id="txt" value="" />
+			<input type="text" name="txt" id="txt" value="" />
+			<input type="file" name="file" id="file" />
+			<input type="button" name="" id="" value="提交" />
+		</form>
+		<div class="picDis">
+			<img src="" alt="" />
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+$('input:button').click(function(event){
+		var formData = new FormData($('form')[0]);
+		formData.append('file',$(':file')[0].files[0]);
+    	console.log($(':file')[0].files[0]);
+    	
+//	$.ajax({
+//		type:"post",
+//		url:"",
+//		async:true,
+//		data:formData,
+//		contentType:false,
+//		processData:false,
+//		success:function(data){
+//			console.log(data);
+//			var srcPath = data;
+//			console.log();
+//			$('.picDis img').attr('src','..'+srcPath);
+//		}
+//	});
+})
+</script>

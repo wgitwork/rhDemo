@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<input type="text" id="text" class="text" />
+		
+		<footer style="position:absolute;bottom:0;background:#bababa;width:100%;line-height:40px;text-align:center;">
+			<p>sadfadf</p>
+		</footer>
+	</body>
+</html>
+<script type="text/javascript">
+var flag = false;//先定义一个变量，当改变窗口大小的时候用来做判断
+
+$(".text").focus(function(){//获取焦点时，flag为true
+
+flag = true;
+
+});
+
+window.onresize = function(){
+
+if(flag){//如果flag为true，键盘弹起，改变底部按钮的position，同时将flag改为false
+
+$("fooder").css({"position":"initial"});
+
+flag = false;
+
+}else {
+
+$("fooder").css({"position":"absolute"});
+
+if(document.activeElement.id == "text"){//如果只是收起键盘，而不失去焦点，仍然将flag设为true，否则键盘弹起时仍会将底部按钮顶起
+
+flag = true;
+
+};
+
+};
+
+};
+</script>

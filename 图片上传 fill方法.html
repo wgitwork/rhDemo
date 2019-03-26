@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand" />  
+    <meta name="renderer" content="ie-comp" /> 
+    <meta name="viewport" content="width=device-width, user-scalable=.mian-ul1 li, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"/>
+    <link rel="stylesheet" href="css/reset.css"/>
+    <link rel="stylesheet" type="text/css" href="css/edit.css">
+    <script src="js/jquery-2.2.1.min.js"></script>
+    <title>编辑资料</title>
+    <style type="text/css">
+      .header img{
+            float: left;
+            width: 20px;
+            height: 20px;
+            margin-top:13px;
+      }
+      .shangchuan{
+        width: 30px;
+        margin-top:.4rem;
+        float: right;
+      }
+      .shangchuan a{
+        width: 30px;
+        height: 30px;
+        margin-left:20px;
+        display: block;
+        position: relative;
+      }
+      .file {
+          width: 30px;
+          height: 30px;
+          position: absolute;
+          left: 0;
+          opacity: 0;
+          
+      }
+      .img img{
+         width: 25px;
+         height: 25px
+      }
+       
+        .main  ul li input{
+          border:0;
+          outline: medium;
+        }  
+    </style>
+</head>
+<body>
+  <div class="wrap">
+      <div class="header">
+           <img src="img/1_10.png" onClick="history.go(-1)" class="back"></a>编辑资料<a href="#" class="keep">保存</a>
+      </div>
+      <div class="main">
+          <ul>
+              <li>
+                 <span>我的头像</span>
+                 <div class="shangchuan">
+                    <a href="#" id="con">
+                        <!-- <input type="hidden" id="img" name="uploadImg"/> -->
+                        <input type="file" class="file" id="imgTest" onchange="previewf(this)" accept=".gif,.jpg,.jpeg,.png" />
+                        
+                        <div class="img"><img src="img/icon.png" id="showImg"></div>
+
+                    </a>
+                   
+                  </div>
+              </li>
+              <li><span>我的昵称</span><input type="text" placeholder="请输入昵称" class="nc" /></li>
+              <li><span>签名</span><input type="text" placeholder="请输入签名"  class="qm"/></li>
+          </ul>
+      </div>
+  </div>
+</body>
+</html>
+<script type="text/javascript">
+var access_token=localStorage.getItem("taken");
+//默认
+$.ajax({
+
+    type:"POST",
+    url:"http://leyijia.wokerr.com/index.php/login/userdata",
+    data:{access_token:access_token},
+    dataType:'json',
+    success:function(data){
+       console.log(data);
+       if(data.state==1){
+            $("#showImg").attr("src",data.data.avatar);
+            $(".nc").val(data.data.nickname);
+            $("qm").val(data.data.sign)
+                   
+       }else{
+            alert(data.msg);
+            
+            
+       }
+       
+    }
+})
+function previewf(file) {
+  var showImg = document.getElementById('showImg');
+  if (file.files && file.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (evt) {
+            //alert(evt.target.result)
+         $("#showImg").attr("src",evt.target.result)
+        }
+        reader.readAsDataURL(file.files[0]);
+  } else {
+    alert(2)
+        showImg.innerHTML = '<div class="img" style="filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale,src=\'' + file.value + '\'"></div>';
+  }
+}
+
+
+//点击保存
+$(".keep").click(function(e){
+  e.preventDefault();
+  var img_file=$("#imgTest")
+  var fileObj=img_file[0].files[0];
+  //console.log(file)
+  if(fileObj){
+    var formDate = new FormData();
+    var nc=$(".nc").val(),
+        qm=$(".qm").val();
+        
+        formDate.append("avatar",fileObj);
+        formDate.append("nickname",nc);
+        formDate.append("sign",qm);
+        formDate.append("access_token",access_token);
+        $.ajax({
+          type:"POST",
+          url:"http://leyijia.wokerr.com/index.php/Login/EditUser",
+          data:formDate,
+          processData:false,
+          contentType:false,
+          dataType:'json',
+          success:function(data){
+               console.log(data);
+               if(data.state==1){
+                window.history.go(-1);
+               }else{
+                alert(data.msg);
+               }
+          }
+        })
+  }
+  
+})
+</script>

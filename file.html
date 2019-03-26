@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			img{
+				width:200px;
+				height:200px;
+			}
+		</style>
+	</head>
+	<body>
+		<form id="form" target="nm_iframe" enctype="multipart/form-data">
+			选择图片：<input type="file" id="input" name="img" onchange="onc()" multiple="multiple" />
+
+		</form>
+			<input type="button" name="btn" id="btn" onclick="test()" value="提交" />
+
+	</body>
+</html>
+<script src="js/jquery.min.js"></script>
+<script type="text/javascript">
+	function onc() {
+		var files = document.getElementById("input").files;
+		for(var i=0;i<files.length;i++){
+			var reader = new FileReader();
+	        reader.readAsDataURL(files[i]);                    
+	        reader.onload = function(e) {
+	            // 图片base64化
+	            var newUrl = this.result;
+	            $('body').prepend('<img src="'+ newUrl +'">');
+	        };
+        }
+	}
+	function show(){
+		console.log('13');
+	}
+	function test(){
+		var form = new FormData(document.getElementById("form"));
+		$.ajax({
+	        url:"http://zxk.h9e.net/index.php/Home/Test/testImg",
+	        type:"post",
+	        data:form,
+	        processData:false,
+	        contentType:false,
+	        success:function(data){
+	            console.log(data);
+	        },
+	        error:function(e){
+	            alert("错误！！");
+	        }
+	    });
+	}
+</script>

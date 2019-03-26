@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="http://znl.tupojingyang.top/public/plugins/jQuery/jQuery-2.1.4.min.js"></script>
+<script src="http://znl.tupojingyang.top/public/js/global.js"></script>
+<script src="http://znl.tupojingyang.top/public/js/upgrade.js"></script>
+<script src="http://znl.tupojingyang.top/public/js/layer/layer.js"></script>
+	</head>
+	<body>
+		<span class="type-file-box">
+                            <input type="text" id="imagetext" name="original_img" value="{$goods.original_img}" class="type-file-text">
+                            <input type="button" name="button" id="button1" value="选择上传..." class="type-file-button">
+                            <input class="type-file-file" onClick="GetUploadify2(1,'imagetext','goods','img_call_back')" size="30"
+                                   title="点击前方预览图可查看大图，点击按钮选择文件并提交表单后上传生效">
+                        </span>
+	</body>
+</html>
+<script type="text/javascript">
+	//上传图片回调事件
+    function img_call_back(fileurl_tmp) {
+        $("#imagetext").val(fileurl_tmp);
+        $("#img_a").attr('href', fileurl_tmp);
+        $("#img_i").attr('onmouseover', "layer.tips('<img src=" + fileurl_tmp + ">',this,{tips: [1, '#fff']});");
+    }
+</script>

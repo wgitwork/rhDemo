@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<form action="" method="post" onsubmit="return false">
+			<input type="search" name="search" class="search" id="search" value="输入你想要的" />
+			<input type="submit" value=""/>
+		</form>
+	</body>
+</html>
+<script type="text/javascript">
+	$('.search').keydown(function(event){
+	    if(event.keyCode==13){
+	    	if($('.text_cont').val()!=""){
+				var content=$('.search').val();
+				alert(content);
+			}else{
+				alert('请输入搜索内容');
+			}
+	    }
+	});
+</script>

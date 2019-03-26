@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+
+	<body>
+	</body>
+
+</html>
+<script type="text/javascript">
+	var newDate = new Date();
+	newDate.setTime(timestamp * 1000);
+	$("body").html(newDate.toLocaleDateString())
+</script>
+<script type="text/javascript">
+	//日期转时间
+	var term = data.data.on_time;
+	var date = new Date(term * 1000);
+	Y = date.getFullYear() + '-';
+	M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+	D = date.getDate() + ' ';
+	h = date.getHours() + ':';
+	m = date.getMinutes() + ':';
+	s = date.getSeconds();
+	console.log(Y + M + D + h + m + s);
+</script>
+<script type="text/javascript">
+	//时间转日期
+	var t = "2017-12-08 20:5:30";  // 月、日、时、分、秒如果不满两位数可不带0.
+    var T = new Date(t);  // 将指定日期转换为标准日期格式。Fri Dec 08 2017 20:05:30 GMT+0800 (中国标准时间)
+    console.log(T.getTime()/1000)  // 将转换后的标准日期转换为时间戳。
+</script>

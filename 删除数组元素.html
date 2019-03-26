@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<button class="btn">删除</button>
+	</body>
+</html>
+<script type="text/javascript">
+	var imgObj=new Array();
+	for(var i=0;i<5;i++){
+		imgObj.append('i=',i);
+	}
+	console.log(imgObj);
+	$('.btn').click(function(){
+		imgObj.splice(1,1);
+		console.log(imgObj);
+	})
+</script>

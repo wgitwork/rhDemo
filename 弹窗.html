@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css" />
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript" src="js/jquery-confirm.min.js"></script>
+		<style type="text/css">
+			.jconfirm .jconfirm-scrollpane{
+				margin:0 auto;
+				width:50%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<span class="tianjia">单机弹窗</span>
+		<div class="div"></div>
+	</body>
+</html>
+<script type="text/javascript">
+	$.ajax({
+		url:'message.html',
+		cache : true,
+		async : false,
+		success : function(html) {
+			$(".div").html(html);
+		}
+	})
+	$('.top a').click(function(){
+		alert("123")
+	})
+	$('.tianjia').click(function() {
+		$.confirm({
+			title: '系统提示',
+			content: '确认要删除吗？',
+			type: '#03C499',
+			icon: 'glyphicon glyphicon-question-sign',
+			buttons: {
+				ok: {
+					text: '确认',
+					btnClass: 'btn-primary',
+					action: function() { //单机确认执行的方法
+						$.ajax({
+							type: 'post',
+							url: url + '/index.php/Home/Friends/delGroup',
+							async: false,
+							data: {
+								user_id: uid,
+								group_id: r
+							},
+							dataType: 'json',
+							success: function(data) {
+								console.log(data);
+								if(data.state == 1) {
+									javascript: history.go(-1);
+								}
+								else {
+									alert(data.msg);
+								}
+							}
+						})
+					}
+				},
+				cancel: { //取消执行的方法
+					text: '取消',
+					btnClass: 'btn-primary',
+					action: function() {
+						// button action.
+					}
+				},
+			}
+		});
+
+	})
+</script>

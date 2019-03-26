@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<form action="javascript:return true;"><input class="text_cont input" type="search" placeholder=""></form>
+	</body>
+</html>
+<script type="text/javascript">
+	$('.text_cont').keydown(function(event){
+		var search=$('.text_cont').val();
+	    if(event.keyCode==13){
+	        if($('.text_cont').val()!=""){
+	            showShopList(search);
+	        }else{
+	            alert('请输入搜索内容');
+	        }
+	    }
+	});
+	function showShopList(search){
+		$.ajax({
+			type:"post",
+			url:url+"/index.php/Home/Index/taskSearch",
+			async:false,
+			data:{t_name:search},
+			dataType:'json',
+			success:function(data){
+				console.log(data);
+				var tempHTML="";
+				for(var i=0;i<data.data.length;i++){
+					var term = data.data[i].time;
+					var date = new Date(term * 1000);
+					Y = date.getFullYear() + '-';
+					M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+					D = date.getDate() + ' ';
+					var tType="";
+					if(data.data[i].t_type==0){
+						tType='主课'
+					}else{
+						tType='绘本课';
+					}
+					tempHTML+='<li class="ls_items" id="'+ data.data[i].t_id +'"><span>'+ data.data[i].t_name +'</span><span>'+ tType +'</span><span>'+ Y + M + D +'</span></li>';
+				}
+				$('.lszy ul').html(tempHTML);
+			}
+		});
+	}
+</script>

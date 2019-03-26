@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<input class = "remark" type = "text" maxlength = "10"><br>
+		<textarea name="texts" class="texts" maxlength = "10"></textarea>
+		<!--input限制字数-->
+		<input type="number" pattern="[0-9]*" onafterpaste="this.value=this.value.replace(/\D/g,'')" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="请输入提现金额" class="ti_money" />
+		<button class="btn">提交</button>
+	</body>
+</html>
+<script type="text/javascript">
+	var $remarkInput = $('.remark');
+	var $remarktext = $('.texts');
+	$remarkInput.on('change',function(){
+		var regC = /[^ -~]+/g;
+		var str = $(this).val();
+		if (regC.test(str)){
+			var value = str.substr(0,10);
+			$(this).val(value);
+		}
+	});
+	$remarktext.on('change',function(){
+		var regC = /[^ -~]+/g;
+		var str = $(this).html();
+		if (regC.test(str)){
+			var value = str.substr(0,10);
+			$(this).html(value);
+		}
+	});
+</script>

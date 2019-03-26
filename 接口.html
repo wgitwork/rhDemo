@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+	</body>
+</html>
+<script type="text/javascript">
+	$.ajax({
+		type:"post",
+		url:"http://znl.tupojingyang.top/index.php/Home/Goods/getShop",
+		async:false,
+		data:{shop_id:1},
+		dataType:"jsonp",
+		success:function(data){
+			console.log(data);
+		},
+    	error: function (XMLHttpRequest, textStatus, errorThrown) { 
+　　               $("#p_test").innerHTML = "there is something wrong!";
+ 　　                console.log(XMLHttpRequest.status); 
+　　                 console.log(XMLHttpRequest.readyState); 
+　　                 console.log(textStatus);
+ 　　	}
+	});
+</script>

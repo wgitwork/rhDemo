@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<select class="sel" name="sel">
+			<option value="">1</option>
+			<option value="">2</option>
+			<option value="">3</option>
+			<option value="">4</option>
+		</select>
+	</body>
+</html>
+<script type="text/javascript">
+//	$(".sel option:selected").each(function(){
+//		console.log($(this).text());
+//	})
+	$(".sel").change(function(){
+		console.log($(this).children("option:selected").text());
+	})
+</script>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+	</head>
+	<body>
+		<img src="img/Album.png"/>
+		<img src="img/推荐@2x.png"/>
+		<a href="img/推荐@2x.png" download="推荐@2x.png">保存图片</a>
+		<input type="button" value="download image" onclick="DownLoadReportIMG('http://www.oursss.com/uploads/photo/1045_2590.jpg?rd=0.9961522558898981');">
+	</body>
+</html>
+<script type="text/javascript">
+	 function DownLoadReportIMG(imgPathURL) {
+        //如果隐藏IFRAME不存在，则添加
+        if (!document.getElementById('IframeReportImg'))
+        $('').appendTo('body');
+        
+        if (document.all.IframeReportImg.src != imgPathURL) {
+            //加载图片
+            document.all.IframeReportImg.src = imgPathURL;
+        }
+        else {
+            //图片直接另存为
+            DoSaveAsIMG();
+        }
+    }
+    function DoSaveAsIMG() {
+        if (document.all.IframeReportImg.src != 'about:blank')
+        document.frames('IframeReportImg').document.execCommand('SaveAs');
+    }
+    
+</script>
+<!--<script type="text/javascript">
+//长按选择图片
+document.addEventListener("longtap", function(event) {
+    var name = event.target.tagName;
+    if(name === "IMG") {
+        // 下载图片
+        alert('我是图片')
+    }
+});
+
+//下载图片
+var downLoader = plus.downloader.createDownload(imgUrl, {
+    method: 'GET',
+    filename: '_downloads/image' + suffix
+}, function(download, status) {
+    var fileName = download.filename;
+    console.log('文件名:' + fileName);
+    console.log('下载状态：' + status);
+});
+downLoader.start();
+
+//保存至本地相册
+plus.gallery.save(fileName, function() {
+    mui.confirm("打开相册", "打开相册？", ["打开", "不看"], function(event) {
+        var gindex = event.index;
+        if(gindex == 0) {
+            plus.gallery.pick(function(file) {
+                mui.toast("你选择了图片：" + file);
+            }, function(error) {
+                console.log(error);
+            }, {
+                filter: 'image'
+            });
+        }
+    });
+});
+
+//创建窗口对象并添加本地JS文件
+var imageWv = plus.webview.create("http://image.baidu.com/", "image", {
+    top: "44px",
+    bottom: 0
+});
+imageWv.appendJsFile("js/mui.min.js");
+imageWv.appendJsFile("js/downloadImage.js");
+imageWv.show("fade-in");
+</script>-->

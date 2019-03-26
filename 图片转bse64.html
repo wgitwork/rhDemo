@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<img class="img" src="img/Album.png"/>
+		<button class="btn">单机转base64</button>
+	</body>
+</html>
+<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+<script type="text/javascript">
+	function getBase64Image(img) {
+		var canvas = document.createElement("canvas");
+		canvas.width = img.width;
+		canvas.height = img.height;
+		var ctx = canvas.getContext("2d");
+		ctx.drawImage(img, 0, 0, img.width, img.height);
+		var ext = img.src.substring(img.src.lastIndexOf(".") + 1).toLowerCase();
+		var dataURL = canvas.toDataURL("image/" + ext);
+		return dataURL;
+	}
+	$('.btn').click(function(){
+		img=$('.img').attr('src');
+		var image = new Image();
+		image.src = img;
+		image.crossOrigin="anonymous"; 
+		image.onload = function() {
+			var base64 = getBase64Image(image);
+			$('.img').attr('src',base64);
+		}
+	})
+	
+</script>

@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title>测试</title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript" src="js/ys.js"></script>
+	</head>
+	<body>
+		<div class="free-upload">
+H5页面			<p>
+				上传您的约会照片，上传图片
+			</p>
+			<div class="free-upload-photo">
+				<span id="photo_img"></span>
+				<input type="file" id="photo" onchange="start_upload(this)"/>
+			</div>
+		</div>
+		<img src="" id="csimg" width="200" height="200"/>
+	</body>
+	<script>
+		var fail;
+		
+//						console.log(fail);
+var p=0;
+		function start_upload(obj){
+			 if(!isCanvasSupported){
+			 	console.log("2222");
+			 }else{
+			 	compress(event, function(base64Img){
+			 		p++;
+					$("#csimg").attr("src",base64Img);
+					console.log(event.type);
+					console.log(base64Img);
+					console.log(p);
+						
+					// 如需保存  或 把base64转成图片  ajax提交后台处理
+					// 我这里采用ajax方式 自己封装的 
+//					var temp;
+//					temp=base64Img.substr(base64Img.indexOf(','));
+//					temp=temp.substr(1);
+//					console.log(temp);
+				});
+			 }
+		}
+		
+	</script>
+</html>

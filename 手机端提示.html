@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<style type="text/css">
+			.Tips{
+				position:fixed;
+				width:200px;
+				height:30px;
+				background:rgba(0,0,0,0.8);
+				bottom:150px;
+				left:50%;
+				margin-left:-100px;
+				display:none;
+				text-align:center;
+				color:#fff;
+				font-size:.18px;
+				line-height:30px;
+			}
+		</style>
+		<!--<style type="text/css">
+			.Tips{
+				position:fixed;
+				width:4rem;
+				height:.5rem;
+				background:rgba(0,0,0,0.8);
+				bottom:1.5rem;
+				left:50%;
+				margin-left:-2rem;
+				display:none;
+				text-align:center;
+				color:#fff;
+				font-size:.30rem;
+				line-height:.5rem;
+			}
+		</style>-->
+	</head>
+	<body>
+		<p class="click">单机提示</p>
+	</body>
+</html>
+<script type="text/javascript" src="js/public.js"></script>
+<script type="text/javascript">
+	$('.click').click(function(){
+		showTips('您好，请问您有什么需要帮助的');
+	})
+//	function showTips(text){
+//		$('body').append('<div class="Tips">'+ text +'</div>')
+//		if($('.Tips').css('display')=='none'){
+//			$('.Tips').stop(true).fadeIn();
+//			setTimeout(function(){
+//				$('.Tips').fadeOut();
+//				$('.Tips').remove();
+//			},1500);
+//		}
+//	}
+</script>

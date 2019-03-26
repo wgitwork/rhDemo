@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="css/jquery-ui.min.css" /> 
+<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+<script src="js/jquery-ui.js" type="text/javascript"></script> 
+<script type="text/javascript">
+function keleyidialog() {
+$("#dialog").dialog();
+}
+$("#dialog").dialog({
+	autoOpen:false,
+	draggable:false,
+	resizable:false,
+	height: 300,
+	width: 500,
+	modal: true
+});
+</script>
+<style type="text/css">#dialog{display:none;}</style>
+	</head>
+	<body>
+		<div style="width:338px;height:100px;margin:10px auto;"><input type="button" onclick="keleyidialog()" value="点击我" />
+<a href="#" target="_blank">原文</a> <a href="#">无动画</a> <a href="#">动画</a>
+<a href="#">redmond</a>
+<a href="#">sunny</a>
+<br />点击按钮弹出对话框
+</div>
+<div id="dialog" title="div层对话框">
+<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+<p>柯乐义：这是一个弹出div层对话框，可用于显示信息。可以拖动和关闭这个弹出层，还可以改变它的大小。 </p>
+</div>
+	</body>
+</html>

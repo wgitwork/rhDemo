@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript" src="js/echarts.min.js"></script>
+	</head>
+
+	<body>
+		<div id="chartArea" style="height:500px;border:1px solid #ccc;padding:10px;">
+
+		</div>
+	</body>
+
+</html>
+<script type="text/javascript">
+	var myChart = echarts.init(document.getElementById('chartArea'));
+	$.ajax({
+		type: "post",
+		url: "http://jr.wokerr.com/index.php/home/personal/worthChart",
+		data: {
+			id: 23
+		},
+		async: false,
+		dataType: "json",
+		success: function(data) {
+			console.log(data);
+			var xTime = [];
+			var aAmount = [];
+			var bAmount = [];
+			var newDate = new Date();
+			var times;
+			for(var i = 0; i < data.data.ss.length; i++) {
+				times = data.data.ss[i].time;
+				newDate.setTime(times * 1000);
+				xTime.push(newDate.toLocaleDateString());
+				aAmount.push(data.data.ss[i].amount);
+				bAmount.push(data.data.ss[i].amount);
+			}
+			var option = {
+				title: {
+					text: 'ETF基金前八期收益率',
+					x: "center"
+				},
+				tooltip: {
+					trigger: 'axis',
+					axisPointer: { //鼠标滑过的线条样式
+						type: 'line',
+						lineStyle: {
+							//                  color: 'red',//颜色
+							width: 1, //宽度
+							type: 'solid' //实线
+						}
+					}
+					//          formatter: function(value) {//鼠标滑过时显示内容的格式化
+					//              var template = "";
+					//              template += 'Value1：' + value[0].axisValue + "<br/>";
+					//              template += 'Value2：' + value[0].data;
+					//              return template;
+					//          }
+				},
+				//右上角工具条
+				toolbox: {
+					show: true,
+					feature: {
+						mark: {
+							show: true
+						}, //目前还不知道有啥用
+						dataView: {
+							show: true,
+							readOnly: true
+						}, //数据视图
+						magicType: {
+							show: true,
+							type: ['line', 'bar']
+						}, //折线与柱状的切换
+						restore: {
+							show: true
+						}, //重置
+						saveAsImage: {
+							show: true
+						} //保存为图片
+					}
+				},
+				calculable: false,
+				xAxis: { //x轴的数据
+					type: 'category',
+					name: '月份',
+					boundaryGap: false,
+					data: xTime
+				},
+				yAxis: {
+					type: 'value',
+					name: "数值",
+					splitArea: {
+						show: true
+					},
+					axisLabel: { //y轴的内容格式化,很有用的属性
+						formatter: '{value} %'
+					}
+				},
+				dataZoom: [{
+            		dataZoomIndex: 1,
+    				type: 'inside',
+    				startValue: '2018/7/19',
+    				endValue: '2018/7/25',
+        		}, {
+            		type: 'inside'
+        		}],
+				color: ["#3399ff", "#0f0"],
+				legend: {
+					data: ['【一期】收益', '【二期】收益'], //要与series中的name一致
+					y: "top",
+					x: "left"
+				},
+				series: [{
+					itemStyle: {
+						normal: {
+							lineStyle: {
+								color: '#3399ff' //控制折线颜色
+							}
+						}
+					},
+					name: '【一期】收益',
+					type: 'line',
+					data: aAmount
+				}, {
+					itemStyle: {
+						normal: {
+							lineStyle: {
+								color: '#0f0' //控制折线颜色
+							}
+						}
+					},
+					name: '【二期】收益',
+					type: 'line',
+					data: bAmount
+				}]
+			};
+			// 为echarts对象加载数据
+			myChart.setOption(option);
+		}
+	})
+</script>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="pragma" content="no-cache">
+		<meta http-equiv="cache-control" content="no-cache">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="expires" content="0">
+		<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+		<meta http-equiv="description" content="This is my page">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript" src="js/ajaxfileupload.js"></script>
+		<style type="text/css">
+			img {
+				width: 200px;
+				height: 200px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<input type="file" name="file" id="file" value="上传图片" style="display:none" multiple="multiple" />
+		<img class="file" src="img/Album.png" />
+		<button class="btn">提交</button>
+	</body>
+
+</html>
+<script type="text/javascript">
+	var p = 0;
+	$('.file').click(function() {
+		p++;
+		if(p <= 5) {
+			$('#file').click();
+		} else {
+			alert('最多只能上穿5张图片')
+		}
+	})
+	var imgFIlE=[];
+	$('#file').change(function() {
+		console.log($(this)[0].files[0]);
+		var file = $(this)[0].files[0];
+		imgFIlE.push(file);
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = function(e) {
+			// 图片base64化
+			var newUrl = this.result;
+			$('body').prepend('<img src="' + newUrl + '">');
+		};
+	})
+	$('.btn').click(function() {
+		var formData = new FormData();
+		for(var i=0;i<imgFIlE.length;i++){
+			formData.append('img[]', imgFIlE[i]);
+		}
+		formData.append('remark','123');
+		formData.append('task_id','21');
+		formData.append('tel','123');
+		formData.append('realname','123');
+		formData.append('token','b07a998834484a4dd8b50b7cf3382dfc.ddda327ab0823ed3b207b2f32a8ef78c');
+		$.ajax({
+			type: "post",
+			url: "http://zxk.h9e.net/index.php/Home/My/taskVoucher",
+			async: false,
+			contentType: false,
+			processData: false,
+			data: formData,
+			dataType: 'json',
+			success: function(data) {
+				console.log(data);
+			}
+		});
+	})
+</script>

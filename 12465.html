@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<div class="a">
+			<div class="b">
+				
+			</div>
+		</div>
+	</body>
+</html>
+<script type="text/javascript">
+	var html="";
+	html+="<div class='b'>";
+	for(var j=0;j<20;j++){
+		if((j+1)%5==0){
+			html+="<span>"+j+" </span></div><div class='b'>"
+		}else if(j==19){
+			html+="<span>"+j+" </span></div>";
+		}else{
+			html+="<span>"+j+" </span>";
+		}
+	}
+//	html+='</div>';
+	$('.a').html(html);
+</script>

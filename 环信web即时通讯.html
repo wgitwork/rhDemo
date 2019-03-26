@@ -1,0 +1,467 @@
+大家好，这是根据我们公司的项目需求集成的webim demo，具体效果如上图。
+此demo不依赖后台纯属前端demo，且同步聊天记录安卓和ios（只要用户不清楚浏览器缓存），数据全部储存在本地
+那么接下来 咱们开始看看代码吧
+第一步：
+    1、注册环信即时通信云获得appkey，注册账号之后登录环信后台创建应用就可以得到appkey
+第二步：
+    2.引用本地文件
+    <script type='text/javascript' src='webim.config.js'></script>  
+    <script type='text/javascript' src='strophe-1.2.8.min.js'></script>  
+    <script type='text/javascript' src='websdk-1.4.11.js'></script> 
+这三个文件的顺序 不要修改 ，就这么引入
+然后把appkey替换成自己的就可以。
+第三步：
+    1.注册
+     var options = {  
+             username: userid,  
+             password: password,  
+             nickname: nickname,  
+             appKey: WebIM.config.appkey,  
+             success: function () {//注册成功之后回调函数  
+                                      
+             },  
+             error: function () {},  
+             apiUrl: WebIM.config.apiURL  
+      };  
+     conn.registerUser(options);  
+    2.登录
+    var options = {  
+        apiUrl: WebIM.config.apiURL,  
+        user: user,  
+        pwd: password,  
+        appKey: WebIM.config.appkey  
+    };  
+    conn.open(options);  
+    3.创建连接
+    var conn = new WebIM.connection({  
+    isMultiLoginSessions: WebIM.config.isMultiLoginSessions,  
+    https: typeof WebIM.config.https === 'boolean' ? WebIM.config.https : location.protocol === 'https:',  
+    url: WebIM.config.xmppURL,  
+    heartBeatWait: WebIM.config.heartBeatWait,  
+    autoReconnectNumMax: WebIM.config.autoReconnectNumMax,  
+    autoReconnectInterval: WebIM.config.autoReconnectInterval,  
+    apiUrl: WebIM.config.apiURL,  
+    isAutoLogin: true  
+});  
+conn.listen({  
+    onOpened: function ( message ) {},      //连接成功回调  
+    onClosed: function ( message ) {},         //连接关闭回调  
+    onTextMessage: function ( message ) {//收到文本消息  
+        console.log(message);  
+        console.log('收到'+message.from+'发送的消息：'+message.data);  
+        setTimeout(function(){
+              //这一步或许有人会问为什么要加setTimeout，在这里解释一下，是为了同步执行下去
+              var str = message.ext.chatIcon;
+              if(str.indexOf("http")>=0){
+                        str = str.slice(32);
+               }
+              else{
+                        str = message.ext.chatIcon;
+               }
+              //这一步是因为ios和安卓发送消息时，人物头像连接一个是http开头地址  一个是不带本域名的地址，所有要做判断
+             var getUserItem = localStorage.getItem('user_id');//这个user_id 是ios和安卓的conversation_id 这个id是在我们人才详情页面，点击立即沟通时，存储到用户的id
+             然后进入聊天界面，然后模拟点击显示与此用户的界面
+       
+            if(message.from==getUserItem){
+                getNowFormatDate();//时间函数
+                showChatMessage(timestamp3,str,message.data,message.id);//此函数为展示消息函数
+                //这里执行这一步，是判断如果收到的消息是当前用户，就直接显示在本聊天界面
+                detailMessage(timestamp3,message.data,message.from,'text','',message.id,message.from,str,'','','has_read','');//此函数为存储消息函数
+                //为了显示消息，这里是对所有收到的消息都做了存储，下文会介绍消息函数各个参数。
+            }
+            else{//收到的消息不是当前用户
+                detailMessage(timestamp3,message.data,message.from,'text','',message.id,message.from,str,'','','no_read','');//存储消息
+                var w = localStorage[message.from];//获取本地所有存储用户的消息列表
+                var getList = JSON.parse(localStorage[message.from])；//转换成json数组
+                for(var i = 0; i<getList.length; i++){
+                        var reserve = getList[i].message[0].reserve;//此处是为存储的消息设置的已读、未读状态（上文的has_read,no_read）
+                         if(reserve=='no_read'){
+                                 var listNumber = Number(getList.length)-Number(i);//这是获取的未读消息的数量
+                                 getList[0].message[0].number=listNumber;//此处是把未读消息的数量存储到 该用户第一条消息的number里面       
+                                $('.top-list li.'+message.from+'').find('span.notice-badge').show();
+                                $('.top-list li.'+message.from+'').find('span.notice-badge').text(listNumber);
+                                //此处是显示未读消息的数量，该li的class是收到消息用户的id
+                                localStorage[message.from] = JSON.stringify(getList);
+                                return false;//然后把消息的未读已读状态更改保存回本地         
+                         }
+                }
+            }
+        		
+        },0）
+    },  
+    onEmojiMessage: function ( message ) {//收到表情消息  
+        console.log('收到'+message.from+'发送的Emoji'+':'+message.data);  
+        //缓存数据  
+        for(var i=0;i<message.data.length;i++){  
+            var img = message.data[i];  
+            var string;  
+            if (img.type=='txt') {string = string+img.data;}  
+            else{string = string+'<img class="emoji" '+'src="'+img.data +'">';}  
+        }  
+        string = string.replace('undefined','');  
+        console.log(string);  
+       //此处的方法同收到文本消息，不过需要赋予字符串emoji表情标签（转化字符串为img标签）
+      //下面代码需要拿来出，放到你的$(function(){})里面，放到下面只是为了，解释给读者
+      WebIM.Emoji = {  
+            path: '../images/faces/',  
+            map: {  
+                '[):]': 'ee_1.png',  
+                '[:D]': 'ee_2.png',  
+                '[;)]': 'ee_3.png',  
+                '[:-o]': 'ee_4.png',  
+                '[:p]': 'ee_5.png',  
+                '[(H)]': 'ee_6.png',  
+                '[:@]': 'ee_7.png',  
+                '[:s]': 'ee_8.png',  
+                '[:$]': 'ee_9.png',  
+                '[:(]': 'ee_10.png',  
+                '[:\'(]': 'ee_11.png',  
+                '[:|]': 'ee_12.png',  
+                '[(a)]': 'ee_13.png',  
+                '[8o|]': 'ee_14.png',  
+                '[|]': 'ee_15.png',  
+                '[+o(]': 'ee_16.png',  
+                '[<o)]': 'ee_17.png',  
+                '[|-)]': 'ee_18.png',  
+                '[*-)]': 'ee_19.png',  
+                '[:-#]': 'ee_20.png',  
+                '[:-*]': 'ee_21.png',  
+                '[^o)]': 'ee_22.png',  
+                '[8-)]': 'ee_23.png',  
+                '[(|)]': 'ee_24.png',  
+                '[(u)]': 'ee_25.png',  
+                '[(S)]': 'ee_26.png',  
+                '[(*)]': 'ee_27.png',  
+                '[(#)]': 'ee_28.png',  
+                '[(R)]': 'ee_29.png',  
+                '[({)]': 'ee_30.png',  
+                '[(})]': 'ee_31.png',  
+                '[(k)]': 'ee_32.png',  
+                '[(F)]': 'ee_33.png',  
+                '[(W)]': 'ee_34.png',  
+                '[(D)]': 'ee_35.png'  
+            }  
+        }; 
+    },  
+    onPictureMessage: function ( message ) {//收到图片消息  
+        console.log(message);  
+        console.log('收到'+message.from+'发送的图片'+':'+message.url);  
+        getNowFormatDate();//时间函数
+        showChatMessage(timestamp3,str,message.data,message.id);//此函数为展示图片消息函数
+    },  
+    onCmdMessage: function ( message ) {},     //收到命令消息  
+    onAudioMessage: function ( message ) {},   //收到音频消息  
+    onLocationMessage: function ( message ) {},//收到位置消息  
+    onFileMessage: function ( message ) {//收到文件消息  
+        console.log(message);  
+        console.log('收到'+message.from+'发送的文件'+':'+message.url);  
+    },  
+    onVideoMessage: function (message) {  },   //收到视频消息  
+    onPresence: function ( message ) {},       //处理“广播”或“发布-订阅”消息，如联系人订阅请求、处理群组、聊天室被踢解散等消息  
+    onRoster: function ( message ) {},         //处理好友申请  
+    onInviteMessage: function ( message ) {},  //处理群组邀请  
+    onOnline: function () {},                  //本机网络连接成功  
+    onOffline: function () {},                 //本机网络掉线  
+    onError: function ( message ) {},          //失败回调  
+    onBlacklistUpdate: function (list) {},   //黑名单变动                    
+    onReceivedMessage: function(message){},    //收到消息送达客户端回执  
+    onDeliveredMessage: function(message){},   //收到消息送达服务器回执  
+    onReadMessage: function(message){
+        //此处为收到已读消息的回执
+         setTimeout(function(){//为了保持同步操作
+                  var getLength = $("#recordchat-main li.item-myself").length
+                  //此处获取的长度是，当前聊天窗口的长度，且消息是本人发出的，因为现实已读未读只显示己方消息
+                  for (var i = 0; i < getLength ; i++) {
+                      var getLiName = $('#recordchat-main li.item-myself:eq('+i+')').attr('id');
+                       //获取当前我发出消息的id，此id为user_id也就是上文的conversation_id
+                      // console.log(getLiName)
+                      var getMid = $('#recordchat-main li.item-myself:eq('+i+')').attr('mid');
+                      //此处是获取当前我发出消息的mid，与消息回执的mid进行匹配
+                      //console.log(getMid)
+                      if(message.mid==getMid){
+                        $('#recordchat-main li.item-myself:eq('+i+')').find('.no-read').text('已读');
+                        //如果收到回执的消息mid等于当前窗口消息列表的mid，把当前的未读状态改变成已读状态
+                      }
+                      statusRead('已读',message.mid,getLiName,'');//此函数是把每一条的消息mid存储到本地且存储了状态
+                  }
+                  
+          },0)
+},        //收到消息已读回执  
+    onCreateGroup: function(message){},        //创建群组成功回执（需调用createGroupNew）  
+    onMutedMessage: function(message){}        //如果用户在A群组被禁言，在A群发消息会走这个回调并且消息不会传递给群其它成员  
+});  
+
+//此处是左侧联系人列表，此方法是应用的layui的流加载，本想着用户多了，会使用layim+环信集成社区聊天模板
+        flow.load({
+            elem: '.top-list' //流加载容器
+            ,mb:10
+            ,isAuto: false
+            ,isLazyimg: true
+            ,done: function(page, next){ //执行下一页的回调
+                //数据插入
+                $.ajax({
+                    url:'',
+                    type:'get',
+                    data:{page:page,user_type:2},
+                    error:function(data){
+                        layer.msg("世上难得两全法，您看是不是您的网络问题，如果不是刷新一下试试哦~")
+                    },
+                    success:function(data){
+                        // console.log(data)
+                        var obj = eval('('+data+')');
+                        var length = obj.result.length;
+                        var pages = length/10;
+                        var lis = [];
+                        for(var i = 0; i < length; i++)
+                        {
+                            lis.push('<li class='+obj.result[i].conversation_id+' chatId="'+obj.result[i].conversation_id+'" chatIcon="'+obj.result[i].info.user_img+'" add_time="'+obj.result[i].add_time+'" uid="'+obj.result[i].chat_id+'" chatName = "'+obj.result[i].conversation_id+'" career_name = "'+obj.result[i].info.career_name+'" city = "'+obj.result[i].info.city+'" education = "'+obj.result[i].info.education+'" industry_id = "'+obj.result[i].info.industry_id+'" salary_range = "'+obj.result[i].info.salary_range+'" school_name="'+obj.result[i].info.school_name+'" school_status="'+obj.result[i].info.school_status+'" specialty="'+obj.result[i].info.specialty+'" user_age="'+obj.result[i].info.user_age+'" user_sex="'+obj.result[i].info.user_sex+'" user_name="'+obj.result[i].info.user_name+'"><a href="javascript:;" data-url=""><div class="figure"><img src="'+obj.result[i].info.user_img+'"></div><div class="text"><div class="title"><div class="text-clear"><span class="name">'+obj.result[i].info.user_name+'</span><span class="time">'+obj.result[i].add_time+'</span></div><p class="gray"> '+obj.result[i].info.school_name+' | '+obj.result[i].info.career_name+' | '+obj.result[i].info.education+'</p></div><span class="notice-badge" style="display: none;"></span></div></a></li>')
+                        }
+                        next(lis.join(''),page< pages); //总页数
+                        var getUserId = localStorage.getItem("user_id");
+                        //模拟点击 当用户直接从人才列表点击进来
+                        for (var i = 0; i < $(".top-list li").length; i++) {
+                            var getItem = $('.top-list li:eq('+i+')').attr('chatid');
+                            // console.log(getItem)此处是conversation_id
+                            if(getUserId==getItem){
+                                $('.top-list li:eq('+i+')').trigger("click");
+                                var height = $("#recordchat-main").height();
+                                $("#chat-list").scrollTop(height);
+                                //此处代码是项目中有需求，点击左侧联系人的时候，右侧聊天窗口显示最底部的消息
+                            } 
+                            if(localStorage[getItem]){
+                            var chatSen = localStorage[getItem];
+                            //console.log(chatSen)然后在加载左侧结束的同时，获取本地存储所有该用户的聊天记录
+                            var chatSenGetItem = JSON.parse(localStorage[getItem]);
+                            //console.log(chatSenGetItem)转换改聊天记录为json数组
+                            var number = chatSenGetItem[0].message[0].number;
+                            //console.log(number)此处为读取存储本地未读的消息
+                            if(number!=''){
+                            $('.top-list li:eq('+i+')').find("span.notice-badge").show();
+                            $('.top-list li:eq('+i+')').find("span.notice-badge").text(number);
+                            }
+                            else{
+                            $('.top-list li:eq('+i+')').find("span.notice-badge").hide();
+                            $('.top-list li:eq('+i+')').find("span.notice-badge").text(number);
+                            }
+                            //未读消息的展示
+                            }
+                        } 
+                    }
+                });
+            }
+        })
+//此处是左侧联系人列表点击的时候，由于没有后台支撑，所有我把所有的用户信息，全部存储到li里面，此处只是demo测试，正式版本肯定会有接口支持
+        $(".top-list").on("click","li",function(){
+            //此处点击切换数据代码已裁剪掉，只写本地存储，im相关   
+           var chatId = $(this).attr("class") //上文提到过conversation_id为了li的class
+            //获取聊天记录
+            if(localStorage[chatId]){
+            var localContent = JSON.parse(localStorage[chatId]);//点击获取该用户的所有聊天记录
+            if(localContent[0].message[0].number!=''){//此number是未读消息的数量
+            localContent[0].message[0].number='';//如果未读消息不为空的话，点击该用户，该用户的未读消息数量清空
+            localStorage[chatId]=JSON.stringify(localContent);
+            //console.log(localContent)
+            }
+                var localContent = JSON.parse(localStorage[chatId]);
+                //console.log(localContent)
+                for (var i = 0; i < localContent.length; i++) {
+                    var data = localContent[i].message[0].data;
+                    var chatId = localContent[i].message[0].chatId;
+                    var from = localContent[i].message[0].from;
+                    var time = localContent[i].message[0].time;
+                    var type = localContent[i].message[0].type;
+                    var filename = localContent[i].message[0].filename;
+                    var id = localContent[i].message[0].id;
+                    var mid = localContent[i].message[0].mid;
+                    var chatIcon = localContent[i].message[0].chatIcon;
+                    var reserve = localContent[i].message[0].reserve;
+                    if(chatIcon==undefined){
+                        chatIcon = '/head_img/12064_15087368603690.png';//如果数据库人物头像丢失，显示默认头像
+                    }
+                    if(localContent[i].message[0].reserve=='no_read'){
+                       // localStorage[chatId].message[0].reserve = 'has_read'
+                        localContent[i].message[0].reserve='has_read';
+                        //console.log(localContent)
+                        localContent[0].message[0].number='';
+                        localStorage[chatId]=JSON.stringify(localContent);
+                        //console.log(localStorage[chatId])  判断该消息的未读已读状态，点击该用户进行转换状态
+                    }
+                    var chat_status;
+                    // console.log(localStorage[chatId])
+                    if(localStorage[id]){
+                        var localStatusContent = JSON.parse(localStorage[id]);
+                        //console.log(localStatusContent)
+                        chat_status = localStatusContent[0].status;
+                    }
+                    else{
+                        //console.log(localStorage[id])
+                        chat_status = '未读';
+                    }
+                    if(from=='me'){
+                        if(type=='text'){
+                            $("#recordchat-main").append('<li class="item-time"><span class="time">'+time+'</span></li><li class="item-myself" id='+id+' mid='+mid+'><div class="no-read">'+chat_status+'</div><div class="text">'+data+'</div></li>');
+                        }
+                        else if(type=='picture'){
+                            $("#recordchat-main").append('<li class="item-time"><span class="time">'+time+'</span></li><li class="selfPrture item-myself" id='+id+' mid='+mid+'><div class="text"><img class="img_url" src='+data+' alt="内容图片" /></div></li>');
+                        }
+                    }else{
+                        if(type=='text'){
+                            $("#recordchat-main").append(
+                             '<li class="item-time"><span class="time">'+time+'</span></li>'
+                            +'<li class="item-friend" id='+mid+'>'
+                            +'<div class="figure"><img src="http://beta.app.first-job-1.com'+chatIcon+'" alt="人物头像" /></div>'//<img src="http://beta.app.first-job-1.com'+message.ext.chatIcon+'">
+                            +'<div class="text">'+data+'</div>'
+                            +'</li>');
+                        }
+                        else if(type=='picture'){
+                            $("#recordchat-main").append(
+                             '<li class="item-time"><span class="time">'+time+'</span></li>'
+                            +'<li class="item-friend selfPrture" id='+mid+'>'
+                            +'<div class="figure"><img src="http://beta.app.first-job-1.com'+chatIcon+'" alt="人物头像" /></div>'
+                            +'<div class="text"><img class="img_url" src='+data+' alt="内容图片" /></div>'
+                            +'</li>');
+                        }
+                    }
+                }
+                //刷新时读取本地消息 展示在聊天窗口
+                //此处为jq写法插入数据，正式版本是改成tpl模板渲染，想想用2句代码就可以展示消息 还是蛮激动的。
+            }
+            else{
+                //console.log("暂无聊天记录")
+            }
+            $(this).find('span.notice-badge').hide();//隐藏数量小红点
+        }) 
+//发送文本消息函数
+        var sendPrivateText = function(msg_content){
+            var name = top.$(".figure>a>img").attr("src");//该企业用户头像
+            var chatIcon = name.slice(31);//该企业用户头像地址裁剪
+            var chatName = top.$(".figure>span").text();//该企业用户名称
+            var chatId = $(".chatId").val();//chat-id
+            var id = conn.getUniqueId();
+            var msg = new WebIM.message('txt', id);
+            msg.set({
+                msg: msg_content,
+                to: chatId,
+                roomType: false,
+                chatType: 'singleChat', 
+                success: function(id, serverMsgId){
+                    $(".chat-input").html("");
+                    getNowFormatDate();
+                    var emojiMessage = WebIM.utils.parseEmoji(msg_content); //表情解析工具
+                   showChatMessage(timestamp3,str,message.data,message.id);
+                    var recordchat = document.getElementById('chat-list');
+                    recordchat.scrollTop = recordchat.scrollHeight;//发送消息时，滚动条出现在底部
+                    //暂时插入数据，tpl绑定模板插入渲染
+                    $("#btn-send").addClass("disabled");//发送按钮置灰
+                    detailMessage(timestamp3,emojiMessage,"me",'text',id,serverMsgId,chatId,'','未读','','','');  
+                },
+                fail: function(e){
+                    //console.log("fail")
+                }
+            });
+
+            msg.body.chatType = 'singleChat';
+            // msg.setGroup('singleChat');  
+            msg.body.ext.chatName= chatName;//传递chatName->ios,java
+            msg.body.ext.chatIcon= chatIcon;//传递chatIcon->ios,java
+            conn.send(msg.body);
+        };
+//发送图片消息函数
+        var sendPrivateFile = function () {
+            var name = top.$(".figure>a>img").attr("src");//该企业用户头像
+            var chatIcon = name.slice(31);//该企业用户头像地址裁剪
+            var chatName = top.$(".figure>span").text();//该企业用户名称
+            var chatId = $(".chatId").val();//chat-id
+            var id = conn.getUniqueId();                   // 生成本地消息id  
+            var msg = new WebIM.message('img', id);        // 创建图片消息  
+            var input = document.getElementById('image');  // 选择图片的input   id必填  
+            var file = WebIM.utils.getFileUrl(input);      // 将图片转化为二进制文件  
+            var allowType = {'jpg': true,'gif': true,'png': true,'bmp': true};  
+            var img_url;  
+            if (file.filetype.toLowerCase() in allowType) {  
+                var option = {  
+                    apiUrl: WebIM.config.apiURL,  
+                    file: file,  
+                    to: chatId,                       // 接收消息对象  
+                    roomType: false,  
+                    chatType: 'singleChat',  
+                    onFileUploadError: function () {      // 消息上传失败  
+                        //console.log('图片发送失败！');  
+                    },  
+                    onFileUploadComplete: function (aa) {   // 消息上传成功  
+                        //console.log('onFileUploadComplete');
+                        img_url = aa.uri+"/"+aa.entities[0].uuid;  
+                    },  
+                    success: function (id, serverMsgId) {                // 消息发送成功 
+                        //console.log(id)
+                        getNowFormatDate() 
+                        showChatMessage(timestamp3,str,message.data,message.id);
+                        var recordchat = document.getElementById('chat-list');
+                        recordchat.scrollTop = recordchat.scrollHeight;
+                        detailMessage(timestamp3,img_url,"me",'picture',file.id,serverMsgId,chatId,'','','','',''); 
+                        // showMessage();
+                    },  
+                    flashUpload: WebIM.flashUpload  
+                };  
+                msg.set(option); 
+                msg.body.chatType = 'singleChat'; 
+                msg.body.ext.chatName= chatName;//传递chatName->ios,java
+                msg.body.ext.chatIcon= chatIcon;//传递chatIcon->ios,java
+                conn.send(msg.body);  
+            }  
+        };
+        //时间函数
+        function getNowFormatDate(){
+          var timestamp1 = new Date().getTime();//获取时间戳此方法准确
+          var timestamp2 = new Date(timestamp1);
+          timestamp3 = timestamp2.toLocaleDateString().replace(/\//g, "-") + " " + timestamp2.toTimeString().substr(0, 8);
+        }
+       //展示消息  根据个人项目需求，正式版本会使用tpl模板 
+        function showChatMessage(timestamp3,str,data,id){
+            $("#recordchat-main").append(
+                             '<li class="item-time"><span class="time">'+timestamp3+'</span></li>'
+                            +'<li class="item-friend" id='+id+'>'
+                            +'<div class="figure"><img src="http://beta.app.first-job-1.com'+str+'"></div>'
+                            +'<div class="text">'+data+'</div>'
+                            +'</li>');
+        }
+     //绑定数据模板
+        function detailMessage(timestamp3,data,from,type,id,mid,chatId,chatIcon,status,filename,reserve,number){  
+            var localContent = new Array();
+            if (localStorage[chatId]) {  
+                localContent = JSON.parse(localStorage[chatId]);  
+            }  
+            localContent[localContent.length]= { 'message':[{ 
+                'time':timestamp3,  
+                'data':data,//数据  
+                'from':from,//谁发的  
+                'type':type,//文本类型 text,file,picture  
+                'id':id,//消息id  
+                'mid':mid,
+                'chatId':chatId,
+                'chatIcon':chatIcon,
+                'status':status,//状态
+                'filename':filename, //文件名字 
+                'reserve':reserve,//已读未读
+                'number':number，//未读数量
+            }]};  
+            localStorage[chatId] = JSON.stringify(localContent);//存储本地； 
+            //console.log(JSON.parse(localStorage[chatId]))
+            
+        }  
+       //根据每一条消息的id存储本地 存储未读已读状态
+        function statusRead(status,mid,id,reserve){
+            var localStatusContent = new Array();
+            if(localStatusContent[id]){
+                localStatusContent = JSON.parse(localStorage[id]); 
+
+            }
+            localStatusContent[localStatusContent.length]={
+                'status':status,
+                'mid':mid,
+                'id':id,
+                'reserve':reserve
+            };
+            localStorage[id] = JSON.stringify(localStatusContent);
+            //console.log(localStorage[id])
+        }

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+	</head>
+	<body>
+		<input class="send" type="button" value="发送验证码" />
+	</body>
+</html>
+<script type="text/javascript">
+	var countdown = 60;
+	$('.send').click(function(){
+		term($(this))
+	})
+	function term(obj){
+		if(countdown==0){
+			clearTimeout(setTerm);
+			obj.removeAttr("disabled");
+			obj.val('发送验证码');
+			countdown=60;
+			return;
+		}else{
+			obj.attr("disabled", true); 
+			obj.val('重新发送（'+ countdown +'）');
+			countdown--;
+		}
+		var setTerm=setTimeout(function() {term(obj) },1000) 
+	}
+</script>

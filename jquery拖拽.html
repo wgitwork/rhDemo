@@ -1,0 +1,188 @@
+<html>
+
+	<head>
+		<title>test</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<script type="text/javascript" src="js/jquery-2.2.1.min.js"></script>
+		<script type="text/javascript">
+			function scaleXBlock(blocker, scaleX) {
+				blocker.css({
+					"-moz-transform": 'scaleX(' + scaleX + ')',
+					"-webkit-transform": 'scaleX(' + scaleX + ')',
+					"-o-transform": 'scaleX(' + scaleX + ')',
+					"-ms-transform": 'scaleX(' + scaleX + ')',
+					"transform": 'scaleX(' + scaleX + ')'
+				});
+			}
+
+			function getPosition(event) {
+				return {
+					x: parseInt(event.pageX || event.X),
+					y: parseInt(event.pageY || event.Y)
+				}
+			}
+
+			function cancelEvent(event) {
+				if(event.preventDefault) {
+					event.preventDefault();
+				} else { //IE中阻止函数器默认动作的方式
+					event.returnValue = false;
+				}
+				return false;
+			}
+
+			function stopDrag(blocker) {
+				blocker.data('draginfo', {
+					isDrag: false
+				});
+				blocker.css('cursor', "arrow");
+			}
+
+			function drag(blocker) {
+				blocker.data('draginfo', {
+					isDrag: false
+				});
+				blocker.css("position", "absolute");
+				blocker.mousedown(function(event) {
+					event = event || window.event;
+					var position = getPosition(event),
+						offset = blocker.offset(),
+						offsetX = position.x - parseInt(offset.left),
+						offsetY = position.y - parseInt(offset.top);
+					blocker.css('cursor', "move");
+					blocker.data('draginfo', {
+						isDrag: true,
+						offsetX: offsetX,
+						offsetY: offsetY
+					});
+					cancelEvent(event);
+				});
+				blocker.mouseup(function() {
+					stopDrag($(this));
+				});
+				$(document).mousemove(function(event) {
+					var dragInfo = blocker.data('draginfo');
+					if(!dragInfo.isDrag) {
+						return;
+					}
+					event = event || window.event;
+					var position = getPosition(event),
+						x = position.x - dragInfo.offsetX,
+						y = position.y - dragInfo.offsetY;
+					blocker.css({
+						"left": x + "px",
+						"top": y + "px"
+					});
+					cancelEvent(event);
+				}).mouseup(function() {
+					stopDrag(blocker);
+				});
+			}
+
+			function loopScaleXBlock(timeout, mode, blocker, scaleX) {
+				scaleXBlock(blocker, scaleX);
+				setTimeout(function() {
+					if(mode == "bigger") {
+						if(scaleX < 1) {
+							scaleX += 0.05;
+						} else {
+							mode = "smaller";
+							scaleX = 1;
+						}
+					} else {
+						if(scaleX > 0) {
+							scaleX -= 0.05;
+						} else {
+							mode = "bigger";
+							scaleX = 0.05;
+						}
+					}
+					loopScaleXBlock(timeout, mode, blocker, scaleX);
+				}, timeout);
+			}
+
+			function initDrag() {
+				var dragList = $(".drag");
+				for(var i = 0, length = dragList.length; i < length; i++) {
+					drag($(dragList[i]));
+				}
+			}
+
+			function initScaleX() {
+				var scaleXList = $(".scale");
+				for(var i = 0, length = scaleXList.length; i < length; i++) {
+					loopScaleXBlock(10 * i + 10, "smaller", $(scaleXList[i]), 1);
+				}
+			}
+			$(document).ready(function() {
+				initScaleX();
+				initDrag();
+			});
+		</script>
+		<style type="text/css">
+			body {
+				margin: 0;
+				background: black;
+			}
+			
+			.block {
+				position: absolute;
+				text-align: center;
+				display: block;
+				width: 250px;
+				height: 250px;
+				background: #494949;
+				font-size: 80px;
+				color: #fff;
+				line-height: 125px;
+				text-shadow: 2px 2px 2px #fff;
+				box-shadow: 2px 2px 2px #fff;
+				cursor: pointer;
+				opacity: 0.6;
+				filter: alpha(opacity=60);
+			}
+			
+			#scale {
+				left: 0;
+				top: 0;
+			}
+			
+			#scale2 {
+				left: 300px;
+				top: 0;
+				background: #F2F2F2;
+				color: orange;
+			}
+			
+			#scale3 {
+				left: 600px;
+				top: 0;
+				background: orange;
+				color: #494949;
+			}
+			
+			#scale4 {
+				left: 900px;
+				top: 0;
+				background: green;
+				color: gray;
+			}
+			
+			#scale5 {
+				left: 1200px;
+				top: 0;
+				background: #494949;
+				color: orange;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="block scale drag" id="scale"> 欢迎来看咧 </div>
+		<div class="block scale drag" id="scale2"> 欢迎来看咧 </div>
+		<div class="block scale drag" id="scale3"> 欢迎来看咧 </div>
+		<div class="block scale drag" id="scale4"> 欢迎来看咧 </div>
+		<div class="block scale drag" id="scale5"> 欢迎来看咧 </div>
+	</body>
+
+</html>
